@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>zakho restaurant</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico">
+
+
+
+</head>
+
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="app-container glass-panel">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="logo-section">
+                <h1>🍽️ zakho restaurant</h1>
+            </div>
+            <div class="header-controls">
+                <button id="lang-btn-en" class="lang-btn active" onclick="app.switchLanguage('en')">EN</button>
+                <button id="lang-btn-ar" class="lang-btn" onclick="app.switchLanguage('ar')">عربي</button>
+                <button id="lang-btn-ku" class="lang-btn" onclick="app.switchLanguage('ku')">کوردی</button>
+                <button id="manager-btn" class="icon-btn" onclick="app.toggleLoginModal()">👨‍💼</button>
+                <button id="logout-btn" class="icon-btn hidden" onclick="app.logout()">🚪</button>
+            </div>
+        </header>
+
+        <!-- Public Menu Section -->
+        <main id="public-menu" class="content-section">
+            <div class="categories-wrapper">
+                <div id="category-tabs" class="category-tabs">
+                    <!-- Categories injected here -->
+                </div>
+            </div>
+
+            <div id="menu-grid" class="menu-grid">
+                <!-- Menu items injected here -->
+            </div>
+        </main>
+
+        <!-- Manager Dashboard Section -->
+        <main id="manager-dashboard" class="content-section hidden">
+            <div class="dashboard-header">
+                <h2 data-key="dashboardTitle">Manager Dashboard</h2>
+                <div class="dashboard-tabs">
+                    <button class="tab-btn active" onclick="app.switchDashboardTab('items')" data-key="tabItems">Menu
+                        Items</button>
+                    <button class="tab-btn" onclick="app.switchDashboardTab('categories')"
+                        data-key="tabCategories">Categories</button>
+                    <button class="tab-btn" onclick="app.switchDashboardTab('settings')"
+                        data-key="tabSettings">Settings</button>
+                </div>
+            </div>
+
+            <!-- Items Tab -->
+            <div id="tab-items" class="dashboard-tab-content active">
+                <div class="action-bar">
+                    <button class="btn primary-btn" onclick="app.openItemModal()" data-key="addNewItem">+ Add New
+                        Item</button>
+                </div>
+                <div class="table-container glass-panel-inner">
+                    <table id="items-table">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Name (EN)</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Items rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Categories Tab -->
+            <div id="tab-categories" class="dashboard-tab-content">
+                <div class="action-bar">
+                    <button class="btn primary-btn" onclick="app.openCategoryModal()" data-key="addNewCategory">+ Add
+                        Category</button>
+                </div>
+                <div class="table-container glass-panel-inner">
+                    <table id="categories-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name (EN)</th>
+                                <th>Name (AR)</th>
+                                <th>Name (KU)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Categories rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="tab-settings" class="dashboard-tab-content">
+                <div class="form-container glass-panel-inner" style="max-width: 500px; margin: 0 auto;">
+                    <h3 data-key="changePassword">Change Password</h3>
+                    <form id="password-form" onsubmit="event.preventDefault(); app.changePasswordSubmit();">
+                        <div class="form-group">
+                            <label data-key="oldPassword">Old Password</label>
+                            <input type="password" id="old-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-key="newPassword">New Password</label>
+                            <input type="password" id="new-password" required>
+                        </div>
+                        <button type="submit" class="btn primary-btn" data-key="save">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal hidden">
+        <div class="modal-content glass-panel">
+            <button class="close-btn" onclick="app.closeLoginModal()" title="Close (ESC)">&times;</button>
+            <h2 data-key="managerLogin">Manager Login</h2>
+            <form onsubmit="event.preventDefault(); app.loginSubmit();">
+                <div class="form-group">
+                    <input type="password" id="login-password" placeholder="Enter Password" required>
+                </div>
+                <button type="submit" class="btn primary-btn" data-key="login">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Item Editor Modal -->
+    <div id="item-modal" class="modal hidden">
+        <div class="modal-content glass-panel large-modal">
+            <button class="close-btn" onclick="app.closeItemModal()" title="Close (ESC)">&times;</button>
+            <h2 id="item-modal-title">Add/Edit Item</h2>
+            <form id="item-form" onsubmit="event.preventDefault(); app.saveItem();">
+                <input type="hidden" id="item-id">
+
+                <div class="form-grid">
+                    <!-- Image Upload -->
+                    <div class="form-group full-width">
+                        <label>Image</label>
+                        <input type="file" id="item-image-file" accept="image/*"
+                            onchange="app.handleImagePreview(this)">
+                        <div id="image-preview-container" class="image-preview-box">
+                            <img id="item-image-preview" src="" class="hidden">
+                            <span class="placeholder">No Image Selected</span>
+                        </div>
+                        <input type="hidden" id="item-image-base64">
+                    </div>
+
+                    <!-- Names -->
+                    <div class="form-group">
+                        <label>Name (English)</label>
+                        <input type="text" id="item-name-en" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Name (Arabic)</label>
+                        <input type="text" id="item-name-ar" dir="rtl" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Name (Kurdish)</label>
+                        <input type="text" id="item-name-ku" dir="rtl" required>
+                    </div>
+
+                    <!-- Price & Category -->
+                    <div class="form-group">
+                        <label>Price (IQD)</label>
+                        <input type="number" id="item-price" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="item-category" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="item-status">
+                            <option value="available">Available</option>
+                            <option value="unavailable">Unavailable</option>
+                        </select>
+                    </div>
+
+                    <!-- Descriptions -->
+                    <div class="form-group full-width">
+                        <label>Description (EN | AR | KU)</label>
+                        <div class="multi-input">
+                            <input type="text" id="item-desc-en" placeholder="English">
+                            <input type="text" id="item-desc-ar" placeholder="Arabic" dir="rtl">
+                            <input type="text" id="item-desc-ku" placeholder="Kurdish" dir="rtl">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn secondary-btn" onclick="app.closeItemModal()">Cancel</button>
+                    <button type="submit" class="btn primary-btn">Save Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Category Editor Modal -->
+    <div id="category-modal" class="modal hidden">
+        <div class="modal-content glass-panel">
+            <button class="close-btn" onclick="app.closeCategoryModal()" title="Close (ESC)">&times;</button>
+            <h2>Edit Category</h2>
+            <form id="category-form" onsubmit="event.preventDefault(); app.saveCategory();">
+                <input type="hidden" id="cat-id">
+                <div class="form-group">
+                    <label>Name (English)</label>
+                    <input type="text" id="cat-name-en" required>
+                </div>
+                <div class="form-group">
+                    <label>Name (Arabic)</label>
+                    <input type="text" id="cat-name-ar" dir="rtl" required>
+                </div>
+                <div class="form-group">
+                    <label>Name (Kurdish)</label>
+                    <input type="text" id="cat-name-ku" dir="rtl" required>
+                </div>
+                <button type="submit" class="btn primary-btn">Save Category</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
